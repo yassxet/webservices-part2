@@ -336,14 +336,15 @@ app.post("/chat", (req, res) => {
 });
 
 
-
 app.post("/chat-messages", (req, res) => {
-
     let chat = []
+
     for (let i = 0; i < messages.length; i++) {
-        if (messages[i].from !== messages[i].destination)
-            chat.push({ from: messages[i].from, contents: messages[i].contents })
+        if (messages[i].from === token_username.get(req.headers.token) && messages[i].destination === JSON.parse(req.body).destination) {
+            chat.push({ "from": messages[i].from, "contents": messages[i].contents }, { "from": messages[i + 1].from, "contents": messages[i + 1].contents })
+        }
     }
+    console.log(chat)
 
     if (tokens.get(token_username.get(req.headers.token)) !== req.headers.token) {
         res.send(JSON.stringify({ success: false, reason: "Invalid token" }));
@@ -362,10 +363,10 @@ app.post("/chat-messages", (req, res) => {
 
     else
         res.send(JSON.stringify({ "success": true, messages: chat }));
-        console.log(chat)
-
+    console.log(chat)
 
 });
+
 
 
 
